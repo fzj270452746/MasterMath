@@ -1,127 +1,126 @@
 //
-//  KachelAnsicht.swift
+//  TokenView.swift
 //  MasterMath
 //
-//  Mahjong-Kachel Ansicht (Mahjong Tile View)
+//  Numeric Token View
 //
 
 import UIKit
 
-class KachelAnsicht: UIView {
+class TokenView: UIView {
     
-    private let bildAnsicht = UIImageView()
-    private let auswahlUeberlagung = UIView()
-    private let wertLabel = UILabel()
+    private let imageView = UIImageView()
+    private let selectionOverlay = UIView()
+    private let valueLabel = UILabel()
     
-    var kachel: MahjongKachel? {
+    var token: NumericToken? {
         didSet {
-            aktualiesiereAnsicht()
+            updateView()
         }
     }
     
-    var istAusgewaehlt: Bool = false {
+    var isSelected: Bool = false {
         didSet {
-            auswahlUeberlagung.isHidden = !istAusgewaehlt
-            if istAusgewaehlt {
-                animiereAuswahl()
+            selectionOverlay.isHidden = !isSelected
+            if isSelected {
+                animateSelection()
             }
         }
     }
     
-    var kachelAngetippt: ((KachelAnsicht) -> Void)?
+    var tokenTapped: ((TokenView) -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        einrichteAnsicht()
+        setupView()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        einrichteAnsicht()
+        setupView()
     }
     
-    private func einrichteAnsicht() {
-        // Hintergrund - 透明背景，无容器
+    private func setupView() {
         backgroundColor = .clear
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOffset = CGSize(width: 0, height: 4)
         layer.shadowRadius = 8
         layer.shadowOpacity = 0.2
         
-        // Bild
-        bildAnsicht.contentMode = .scaleAspectFit
-        bildAnsicht.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(bildAnsicht)
+        // Image
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(imageView)
         
-        // Wert Label
-        wertLabel.textAlignment = .center
-        wertLabel.font = UIFont.boldSystemFont(ofSize: 32)
-        wertLabel.textColor = .black
-        wertLabel.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(wertLabel)
+        // Value Label
+        valueLabel.textAlignment = .center
+        valueLabel.font = UIFont.boldSystemFont(ofSize: 32)
+        valueLabel.textColor = .black
+        valueLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(valueLabel)
         
-        // Auswahl-Overlay - 只有边框，无背景和圆角
-        auswahlUeberlagung.backgroundColor = .clear
-        auswahlUeberlagung.layer.borderWidth = 4
-        auswahlUeberlagung.layer.borderColor = UIColor.systemYellow.cgColor
-        auswahlUeberlagung.isHidden = true
-        auswahlUeberlagung.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(auswahlUeberlagung)
+        // Selection Overlay - only border, no background and corner radius
+        selectionOverlay.backgroundColor = .clear
+        selectionOverlay.layer.borderWidth = 4
+        selectionOverlay.layer.borderColor = UIColor.systemYellow.cgColor
+        selectionOverlay.isHidden = true
+        selectionOverlay.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(selectionOverlay)
         
         // Constraints
         NSLayoutConstraint.activate([
-            bildAnsicht.topAnchor.constraint(equalTo: topAnchor),
-            bildAnsicht.leadingAnchor.constraint(equalTo: leadingAnchor),
-            bildAnsicht.trailingAnchor.constraint(equalTo: trailingAnchor),
-            bildAnsicht.bottomAnchor.constraint(equalTo: bottomAnchor),
+            imageView.topAnchor.constraint(equalTo: topAnchor),
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            imageView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-            wertLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            wertLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            valueLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            valueLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             
-            auswahlUeberlagung.topAnchor.constraint(equalTo: topAnchor),
-            auswahlUeberlagung.leadingAnchor.constraint(equalTo: leadingAnchor),
-            auswahlUeberlagung.trailingAnchor.constraint(equalTo: trailingAnchor),
-            auswahlUeberlagung.bottomAnchor.constraint(equalTo: bottomAnchor)
+            selectionOverlay.topAnchor.constraint(equalTo: topAnchor),
+            selectionOverlay.leadingAnchor.constraint(equalTo: leadingAnchor),
+            selectionOverlay.trailingAnchor.constraint(equalTo: trailingAnchor),
+            selectionOverlay.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
         
         // Tap Gesture
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(kachelWurdeAngetippt))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tokenWasTapped))
         addGestureRecognizer(tapGesture)
     }
     
-    private func aktualiesiereAnsicht() {
-        guard let kachel = kachel else { return }
+    private func updateView() {
+        guard let token = token else { return }
         
-        // Versuche Bild zu laden, ansonsten zeige Wert
-        if let bild = UIImage(named: kachel.bildName) {
-            bildAnsicht.image = bild
-            wertLabel.isHidden = true
+        // Try to load image, otherwise show value
+        if let image = UIImage(named: token.imageAssetName) {
+            imageView.image = image
+            valueLabel.isHidden = true
         } else {
-            // Fallback: Zeige Wert mit farbigem Hintergrund
-            bildAnsicht.image = nil
-            wertLabel.text = "\(kachel.wert)"
-            wertLabel.isHidden = false
+            // Fallback: Show value with colored background
+            imageView.image = nil
+            valueLabel.text = "\(token.value)"
+            valueLabel.isHidden = false
             
-            // Setze Hintergrundfarbe basierend auf Farbe
-            switch kachel.farbe {
+            // Set background color based on color scheme
+            switch token.colorScheme {
             case .freun:
                 backgroundColor = UIColor.systemRed.withAlphaComponent(0.2)
-                wertLabel.textColor = .systemRed
+                valueLabel.textColor = .systemRed
             case .joirars:
                 backgroundColor = UIColor.systemBlue.withAlphaComponent(0.2)
-                wertLabel.textColor = .systemBlue
+                valueLabel.textColor = .systemBlue
             case .sortie:
                 backgroundColor = UIColor.systemGreen.withAlphaComponent(0.2)
-                wertLabel.textColor = .systemGreen
+                valueLabel.textColor = .systemGreen
             }
         }
     }
     
-    @objc private func kachelWurdeAngetippt() {
-        kachelAngetippt?(self)
+    @objc private func tokenWasTapped() {
+        tokenTapped?(self)
     }
     
-    private func animiereAuswahl() {
+    private func animateSelection() {
         UIView.animate(withDuration: 0.2, animations: {
             self.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
         }) { _ in

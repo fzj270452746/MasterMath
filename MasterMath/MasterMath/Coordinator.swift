@@ -1,27 +1,27 @@
 
 import UIKit
 
-// MARK: - Coordinator Protokoll
+// MARK: - Orchestrator Protocol
 
-protocol Coordinator: AnyObject {
-    var childCoordinators: [Coordinator] { get set }
+protocol Orchestrator: AnyObject {
+    var childOrchestrators: [Orchestrator] { get set }
     var navigationController: UINavigationController? { get set }
     
-    func start()
-    func childDidFinish(_ child: Coordinator)
+    func commence()
+    func childDidComplete(_ child: Orchestrator)
 }
 
-extension Coordinator {
-    func childDidFinish(_ child: Coordinator) {
-        childCoordinators.removeAll { $0 === child }
+extension Orchestrator {
+    func childDidComplete(_ child: Orchestrator) {
+        childOrchestrators.removeAll { $0 === child }
     }
 }
 
-// MARK: - Haupt Coordinator
+// MARK: - Primary Orchestrator
 
-final class HauptCoordinator: Coordinator {
+final class PrimaryOrchestrator: Orchestrator {
     
-    var childCoordinators: [Coordinator] = []
+    var childOrchestrators: [Orchestrator] = []
     var navigationController: UINavigationController?
     
     private weak var window: UIWindow?
@@ -30,139 +30,137 @@ final class HauptCoordinator: Coordinator {
         self.window = window
     }
     
-    func start() {
-        let hauptViewController = HauptViewController()
-        hauptViewController.coordinator = self
+    func commence() {
+        let primaryPresenter = PrimaryPresenter()
+        primaryPresenter.orchestrator = self
         
-        window?.rootViewController = hauptViewController
+        window?.rootViewController = primaryPresenter
         window?.makeKeyAndVisible()
     }
     
-    func zeigeSpiel(modus: SpielModus, von viewController: UIViewController) {
-        let spielCoordinator = SpielCoordinator(modus: modus)
-        spielCoordinator.parentCoordinator = self
-        childCoordinators.append(spielCoordinator)
-        spielCoordinator.start(von: viewController)
+    func displayQuest(mode: ChallengeMode, from presenter: UIViewController) {
+        let questOrchestrator = QuestOrchestrator(mode: mode)
+        questOrchestrator.parentOrchestrator = self
+        childOrchestrators.append(questOrchestrator)
+        questOrchestrator.commence(from: presenter)
     }
     
-    func zeigeRangliste(von viewController: UIViewController) {
-        let ranglisteViewController = RanglisteViewController()
-        ranglisteViewController.modalPresentationStyle = .pageSheet
-        viewController.present(ranglisteViewController, animated: true)
+    func displayLeaderboard(from presenter: UIViewController) {
+        let leaderboardPresenter = LeaderboardPresenter()
+        leaderboardPresenter.modalPresentationStyle = .pageSheet
+        presenter.present(leaderboardPresenter, animated: true)
     }
     
-    func zeigeEinstellungen(von viewController: UIViewController) {
-        let einstellungenViewController = EinstellungenViewController()
-        einstellungenViewController.modalPresentationStyle = .pageSheet
-        viewController.present(einstellungenViewController, animated: true)
+    func displaySettings(from presenter: UIViewController) {
+        let settingsPresenter = SettingsPresenter()
+        settingsPresenter.modalPresentationStyle = .pageSheet
+        presenter.present(settingsPresenter, animated: true)
     }
 }
 
-// MARK: - Spiel Coordinator
+// MARK: - Quest Orchestrator
 
-final class SpielCoordinator: Coordinator {
+final class QuestOrchestrator: Orchestrator {
     
-    var childCoordinators: [Coordinator] = []
+    var childOrchestrators: [Orchestrator] = []
     var navigationController: UINavigationController?
     
-    weak var parentCoordinator: HauptCoordinator?
-    private let modus: SpielModus
+    weak var parentOrchestrator: PrimaryOrchestrator?
+    private let mode: ChallengeMode
     private weak var presentingViewController: UIViewController?
     
-    init(modus: SpielModus) {
-        self.modus = modus
+    init(mode: ChallengeMode) {
+        self.mode = mode
     }
     
-    func start() {
-        // Diese Methode wird nicht verwendet, da wir start(von:) nutzen
+    func commence() {
+        // This method is not used, as we use commence(from:) instead
     }
     
-    func start(von viewController: UIViewController) {
-        let viewModel = SpielViewModel(modus: modus)
-        let spielViewController = SpielViewController(viewModel: viewModel)
-        spielViewController.coordinator = self
-        spielViewController.modalPresentationStyle = .fullScreen
+    func commence(from presenter: UIViewController) {
+        let mediator = QuestMediator(mode: mode)
+        let questPresenter = QuestPresenter(mediator: mediator)
+        questPresenter.orchestrator = self
+        questPresenter.modalPresentationStyle = .fullScreen
         
-        presentingViewController = viewController
-        viewController.present(spielViewController, animated: true)
+        presentingViewController = presenter
+        presenter.present(questPresenter, animated: true)
     }
     
-    func spielBeenden() {
+    func concludeQuest() {
         presentingViewController?.dismiss(animated: true) { [weak self] in
             guard let self = self else { return }
-            self.parentCoordinator?.childDidFinish(self)
+            self.parentOrchestrator?.childDidComplete(self)
         }
     }
 }
 
-// MARK: - Dialog Coordinator (Helper)
+// MARK: - Dialog Orchestrator (Helper)
 
-final class DialogCoordinator {
+final class DialogOrchestrator {
     
-    static func zeigeDialog(
+    static func displayDialog(
         in view: UIView,
-        titel: String,
-        nachricht: String,
-        schaltflaechenTitel: [String],
-        aktion: ((Int) -> Void)? = nil
+        title: String,
+        message: String,
+        buttonTitles: [String],
+        action: ((Int) -> Void)? = nil
     ) {
-        let dialog = BenutzerdefinierteDialogansicht(
-            titel: titel,
-            nachricht: nachricht,
-            schaltflaechenTitel: schaltflaechenTitel
+        let dialog = CustomDialogView(
+            title: title,
+            message: message,
+            buttonTitles: buttonTitles
         )
-        dialog.schaltflaechenAktion = aktion
-        dialog.anzeigen(in: view)
+        dialog.buttonAction = action
+        dialog.display(in: view)
     }
     
-    static func zeigeErfolgDialog(
+    static func displaySuccessDialog(
         in view: UIView,
-        punkte: Int,
-        aktion: (() -> Void)? = nil
+        points: Int,
+        action: (() -> Void)? = nil
     ) {
-        let dialog = BenutzerdefinierteDialogansicht(
-            titel: "🎉 Correct!",
-            nachricht: "Well done! +\(punkte) points",
-            schaltflaechenTitel: ["Continue"]
+        let dialog = CustomDialogView(
+            title: "🎉 Correct!",
+            message: "Well done! +\(points) points",
+            buttonTitles: ["Continue"]
         )
-        dialog.schaltflaechenAktion = { _ in aktion?() }
-        dialog.anzeigen(in: view)
+        dialog.buttonAction = { _ in action?() }
+        dialog.display(in: view)
     }
     
-    static func zeigeFehlerDialog(
+    static func displayErrorDialog(
         in view: UIView,
-        titel: String,
-        nachricht: String
+        title: String,
+        message: String
     ) {
-        zeigeDialog(
+        displayDialog(
             in: view,
-            titel: titel,
-            nachricht: nachricht,
-            schaltflaechenTitel: ["OK"]
+            title: title,
+            message: message,
+            buttonTitles: ["OK"]
         )
     }
     
-    static func zeigeZeitAbgelaufenDialog(
+    static func displayTimeExpiredDialog(
         in view: UIView,
-        punktzahl: Int,
+        score: Int,
         level: Int,
-        neustart: @escaping () -> Void,
-        beenden: @escaping () -> Void
+        restart: @escaping () -> Void,
+        exit: @escaping () -> Void
     ) {
-        let dialog = BenutzerdefinierteDialogansicht(
-            titel: "⏰ Time's Up!",
-            nachricht: "Final Score: \(punktzahl)\nLevel: \(level)",
-            schaltflaechenTitel: ["Play Again", "Exit"]
+        let dialog = CustomDialogView(
+            title: "⏰ Time's Up!",
+            message: "Final Score: \(score)\nLevel: \(level)",
+            buttonTitles: ["Play Again", "Exit"]
         )
-        dialog.schaltflaechenAktion = { index in
+        dialog.buttonAction = { index in
             if index == 0 {
-                neustart()
+                restart()
             } else {
-                beenden()
+                exit()
             }
         }
-        dialog.anzeigen(in: view)
+        dialog.display(in: view)
     }
 }
-
-

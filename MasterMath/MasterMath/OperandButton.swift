@@ -1,72 +1,70 @@
 //
-//  OperatorSchaltflaeche.swift
+//  OperandButton.swift
 //  MasterMath
 //
-//  Operator Schaltfläche (Operator Button)
+//  Operand Button
 //
 
 import UIKit
 
-class OperatorSchaltflaeche: UIButton {
+class OperandButton: UIButton {
     
-    var operatorTyp: OperatorTyp? {
+    var operandType: ArithmeticOperand? {
         didSet {
-            aktualiesiereAnsicht()
+            updateView()
         }
     }
     
-    var istAusgewaehlt: Bool = false {
+    var isOperandSelected: Bool = false {
         didSet {
-            aktualiesiereAuswahlStatus()
+            updateSelectionStatus()
         }
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        einrichteAnsicht()
+        setupView()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        einrichteAnsicht()
+        setupView()
     }
     
-    private func einrichteAnsicht() {
+    private func setupView() {
         backgroundColor = .systemIndigo
-        layer.cornerRadius = 35  // 增大圆角以适应更大的按钮 (70/2 = 35)
+        layer.cornerRadius = 35
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOffset = CGSize(width: 0, height: 2)
         layer.shadowRadius = 4
         layer.shadowOpacity = 0.3
         
-        // 设置图片内容模式
+        // Set image content mode
         imageView?.contentMode = .scaleAspectFit
         
-        addTarget(self, action: #selector(schaltflaecheGedrueckt), for: .touchUpInside)
+        addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
     }
     
-    private func aktualiesiereAnsicht() {
-        guard let op = operatorTyp else { return }
+    private func updateView() {
+        guard let op = operandType else { return }
         
-        // 使用素材图片而不是文字符号
-        let bildName = op.rawValue  // "Operator_add", "Operator_subtract", 等
-        if let bild = UIImage(named: bildName) {
-            setImage(bild, for: .normal)
-            // 适当减小边距，让图片更大，更清晰
+        // Use asset image instead of text symbol
+        let imageName = op.rawValue
+        if let image = UIImage(named: imageName) {
+            setImage(image, for: .normal)
             imageEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         } else {
-            // 如果图片加载失败，回退到文本（增大字体）
+            // Fallback to text if image loading fails
             setTitle(op.symbol, for: .normal)
             titleLabel?.font = UIFont.boldSystemFont(ofSize: 32)
         }
     }
     
-    private func aktualiesiereAuswahlStatus() {
-        if istAusgewaehlt {
+    private func updateSelectionStatus() {
+        if isOperandSelected {
             backgroundColor = .systemYellow
             layer.borderWidth = 3
             layer.borderColor = UIColor.systemOrange.cgColor
-            // 为选中状态添加轻微的缩放
             transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
         } else {
             backgroundColor = .systemIndigo
@@ -75,8 +73,8 @@ class OperatorSchaltflaeche: UIButton {
         }
     }
     
-    @objc private func schaltflaecheGedrueckt() {
-        // 简单的点击反馈动画（按下-弹起）
+    @objc private func buttonPressed() {
+        // Simple click feedback animation (press-release)
         UIView.animate(withDuration: 0.1, animations: {
             self.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
         }) { _ in
@@ -86,4 +84,3 @@ class OperatorSchaltflaeche: UIButton {
         }
     }
 }
-

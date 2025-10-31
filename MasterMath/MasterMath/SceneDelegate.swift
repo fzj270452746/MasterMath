@@ -1,11 +1,12 @@
 
+
 import UIKit
 import AppTrackingTransparency
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    var coordinator: HauptCoordinator?
+    var orchestrator: PrimaryOrchestrator?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
@@ -13,9 +14,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         self.window = window
         
-        let coordinator = HauptCoordinator(window: window)
-        self.coordinator = coordinator
-        coordinator.start()
+        let orchestrator = PrimaryOrchestrator(window: window)
+        self.orchestrator = orchestrator
+        orchestrator.commence()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -52,4 +53,3 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
 }
-
