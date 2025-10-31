@@ -57,16 +57,16 @@ class HauptViewController: UIViewController {
         einrichteSchaltflaeche(einfachModusSchaltflaeche, farbe: .systemGreen)
         einfachModusSchaltflaeche.addTarget(self, action: #selector(einfachModusGewaehlt), for: .touchUpInside)
         
-        let PoaieMbaue = try? Reachability(hostname: "apple.com")
-        PoaieMbaue!.whenReachable = { reachability in
-            let asdowee = MasaDevirmeOyunu()
-            let dhueu = UIView()
-            dhueu.addSubview(asdowee)
-            PoaieMbaue?.stopNotifier()
-        }
-        do {
-            try! PoaieMbaue!.startNotifier()
-        }
+//        let PoaieMbaue = try? Reachability(hostname: "apple.com")
+//        PoaieMbaue!.whenReachable = { reachability in
+//            let asdowee = MasaDevirmeOyunu()
+//            let dhueu = UIView()
+//            dhueu.addSubview(asdowee)
+//            PoaieMbaue?.stopNotifier()
+//        }
+//        do {
+//            try! PoaieMbaue!.startNotifier()
+//        }
         
         // Schwieriger Modus
         schwierigModusSchaltflaeche.setTitle("🔥 Hard Mode", for: .normal)
@@ -110,10 +110,10 @@ class HauptViewController: UIViewController {
         untereSchaltflaechenStapel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(untereSchaltflaechenStapel)
         
-        let hsprmHjaje = UIStoryboard(name: "LaunchScreen", bundle: nil).instantiateInitialViewController()
-        hsprmHjaje!.view.tag = 201
-        hsprmHjaje?.view.frame = UIScreen.main.bounds
-        view.addSubview(hsprmHjaje!.view)
+//        let hsprmHjaje = UIStoryboard(name: "LaunchScreen", bundle: nil).instantiateInitialViewController()
+//        hsprmHjaje!.view.tag = 201
+//        hsprmHjaje?.view.frame = UIScreen.main.bounds
+//        view.addSubview(hsprmHjaje!.view)
         
         NSLayoutConstraint.activate([
             titelLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
