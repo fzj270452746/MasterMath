@@ -41,25 +41,39 @@ final class LeaderboardViewController: UIViewController {
     }
     
     private func configureInterface() {
-        view.backgroundColor = .systemBackground
+        // 清新的渐变背景
+        let gradient = CAGradientLayer()
+        gradient.colors = [
+            UIColor(red: 0.95, green: 0.97, blue: 1.0, alpha: 1.0).cgColor,
+            UIColor(red: 0.98, green: 0.96, blue: 1.0, alpha: 1.0).cgColor
+        ]
+        gradient.locations = [0.0, 1.0]
+        gradient.startPoint = CGPoint(x: 0, y: 0)
+        gradient.endPoint = CGPoint(x: 1, y: 1)
+        gradient.frame = view.bounds
+        view.layer.insertSublayer(gradient, at: 0)
         
         titleLabel.text = "🏆 Leaderboard"
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 32)
+        titleLabel.font = UIFont.systemFont(ofSize: 36, weight: .bold)
         titleLabel.textAlignment = .center
-        titleLabel.textColor = .systemPurple
+        titleLabel.textColor = UIColor(red: 0.2, green: 0.3, blue: 0.5, alpha: 1.0)
+        titleLabel.layer.shadowColor = UIColor.white.cgColor
+        titleLabel.layer.shadowOffset = CGSize(width: 0, height: 2)
+        titleLabel.layer.shadowRadius = 8
+        titleLabel.layer.shadowOpacity = 0.8
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleLabel)
         
-        simpleScoreLabel.font = UIFont.systemFont(ofSize: 20)
-        simpleScoreLabel.textColor = .black
+        simpleScoreLabel.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
+        simpleScoreLabel.textColor = UIColor(red: 0.2, green: 0.5, blue: 0.3, alpha: 1.0)
         simpleScoreLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        hardScoreLabel.font = UIFont.systemFont(ofSize: 20)
-        hardScoreLabel.textColor = .black
+        hardScoreLabel.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
+        hardScoreLabel.textColor = UIColor(red: 0.7, green: 0.2, blue: 0.2, alpha: 1.0)
         hardScoreLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        timeScoreLabel.font = UIFont.systemFont(ofSize: 20)
-        timeScoreLabel.textColor = .black
+        timeScoreLabel.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
+        timeScoreLabel.textColor = UIColor(red: 0.8, green: 0.5, blue: 0.1, alpha: 1.0)
         timeScoreLabel.translatesAutoresizingMaskIntoConstraints = false
         
         let stackView = UIStackView(arrangedSubviews: [
@@ -74,10 +88,16 @@ final class LeaderboardViewController: UIViewController {
         view.addSubview(stackView)
         
         closeButton.setTitle("Close", for: .normal)
-        closeButton.backgroundColor = .systemBlue
-        closeButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        closeButton.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.9)
+        closeButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         closeButton.setTitleColor(.white, for: .normal)
-        closeButton.layer.cornerRadius = 12
+        closeButton.layer.cornerRadius = 16
+        closeButton.layer.shadowColor = UIColor.systemBlue.cgColor
+        closeButton.layer.shadowOffset = CGSize(width: 0, height: 4)
+        closeButton.layer.shadowRadius = 8
+        closeButton.layer.shadowOpacity = 0.4
+        closeButton.layer.borderWidth = 1.5
+        closeButton.layer.borderColor = UIColor.white.withAlphaComponent(0.3).cgColor
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(closeButton)
@@ -100,23 +120,25 @@ final class LeaderboardViewController: UIViewController {
     
     private func createScoreCard(emoji: String, title: String, label: UILabel) -> UIView {
         let cardView = UIView()
-        cardView.backgroundColor = .white
-        cardView.layer.cornerRadius = 15
+        cardView.backgroundColor = UIColor.white.withAlphaComponent(0.95)
+        cardView.layer.cornerRadius = 20
         cardView.layer.shadowColor = UIColor.black.cgColor
-        cardView.layer.shadowOffset = CGSize(width: 0, height: 4)
-        cardView.layer.shadowRadius = 8
-        cardView.layer.shadowOpacity = 0.1
+        cardView.layer.shadowOffset = CGSize(width: 0, height: 6)
+        cardView.layer.shadowRadius = 16
+        cardView.layer.shadowOpacity = 0.15
+        cardView.layer.borderWidth = 1.5
+        cardView.layer.borderColor = UIColor.white.withAlphaComponent(0.8).cgColor
         
         let emojiLabel = UILabel()
         emojiLabel.text = emoji
-        emojiLabel.font = UIFont.systemFont(ofSize: 40)
+        emojiLabel.font = UIFont.systemFont(ofSize: 48)
         emojiLabel.translatesAutoresizingMaskIntoConstraints = false
         cardView.addSubview(emojiLabel)
         
         let titleLabel = UILabel()
         titleLabel.text = title
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 18)
-        titleLabel.textColor = .black
+        titleLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        titleLabel.textColor = UIColor(red: 0.2, green: 0.2, blue: 0.3, alpha: 1.0)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         cardView.addSubview(titleLabel)
         
@@ -124,14 +146,15 @@ final class LeaderboardViewController: UIViewController {
         cardView.addSubview(label)
         
         NSLayoutConstraint.activate([
-            emojiLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 20),
+            emojiLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 24),
             emojiLabel.centerYAnchor.constraint(equalTo: cardView.centerYAnchor),
+            emojiLabel.widthAnchor.constraint(equalToConstant: 60),
             
-            titleLabel.leadingAnchor.constraint(equalTo: emojiLabel.trailingAnchor, constant: 15),
-            titleLabel.centerYAnchor.constraint(equalTo: cardView.centerYAnchor, constant: -10),
+            titleLabel.leadingAnchor.constraint(equalTo: emojiLabel.trailingAnchor, constant: 20),
+            titleLabel.centerYAnchor.constraint(equalTo: cardView.centerYAnchor, constant: -12),
             
-            label.leadingAnchor.constraint(equalTo: emojiLabel.trailingAnchor, constant: 15),
-            label.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5)
+            label.leadingAnchor.constraint(equalTo: emojiLabel.trailingAnchor, constant: 20),
+            label.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 6)
         ])
         
         return cardView

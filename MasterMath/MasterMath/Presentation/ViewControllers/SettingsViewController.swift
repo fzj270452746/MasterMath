@@ -36,12 +36,26 @@ final class SettingsViewController: UIViewController {
     }
     
     private func configureInterface() {
-        view.backgroundColor = .systemBackground
+        // 清新的渐变背景
+        let gradient = CAGradientLayer()
+        gradient.colors = [
+            UIColor(red: 0.95, green: 0.97, blue: 1.0, alpha: 1.0).cgColor,
+            UIColor(red: 0.98, green: 0.96, blue: 1.0, alpha: 1.0).cgColor
+        ]
+        gradient.locations = [0.0, 1.0]
+        gradient.startPoint = CGPoint(x: 0, y: 0)
+        gradient.endPoint = CGPoint(x: 1, y: 1)
+        gradient.frame = view.bounds
+        view.layer.insertSublayer(gradient, at: 0)
         
         titleLabel.text = "⚙️ Game Guide & Settings"
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 28)
+        titleLabel.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         titleLabel.textAlignment = .center
-        titleLabel.textColor = .systemPurple
+        titleLabel.textColor = UIColor(red: 0.2, green: 0.3, blue: 0.5, alpha: 1.0)
+        titleLabel.layer.shadowColor = UIColor.white.cgColor
+        titleLabel.layer.shadowOffset = CGSize(width: 0, height: 2)
+        titleLabel.layer.shadowRadius = 8
+        titleLabel.layer.shadowOpacity = 0.8
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleLabel)
         
@@ -55,27 +69,31 @@ final class SettingsViewController: UIViewController {
         createGameGuideContent()
         
         resetButton.setTitle("🔄 Reset All Scores", for: .normal)
-        resetButton.backgroundColor = .systemRed
-        resetButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        resetButton.backgroundColor = UIColor.systemRed.withAlphaComponent(0.9)
+        resetButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         resetButton.setTitleColor(.white, for: .normal)
-        resetButton.layer.cornerRadius = 12
-        resetButton.layer.shadowColor = UIColor.black.cgColor
-        resetButton.layer.shadowOffset = CGSize(width: 0, height: 2)
-        resetButton.layer.shadowRadius = 4
-        resetButton.layer.shadowOpacity = 0.3
+        resetButton.layer.cornerRadius = 16
+        resetButton.layer.shadowColor = UIColor.systemRed.cgColor
+        resetButton.layer.shadowOffset = CGSize(width: 0, height: 4)
+        resetButton.layer.shadowRadius = 8
+        resetButton.layer.shadowOpacity = 0.4
+        resetButton.layer.borderWidth = 1.5
+        resetButton.layer.borderColor = UIColor.white.withAlphaComponent(0.3).cgColor
         resetButton.addTarget(self, action: #selector(resetScoresTapped), for: .touchUpInside)
         resetButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(resetButton)
         
         closeButton.setTitle("✕ Close", for: .normal)
-        closeButton.backgroundColor = .systemBlue
-        closeButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        closeButton.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.9)
+        closeButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         closeButton.setTitleColor(.white, for: .normal)
-        closeButton.layer.cornerRadius = 12
-        closeButton.layer.shadowColor = UIColor.black.cgColor
-        closeButton.layer.shadowOffset = CGSize(width: 0, height: 2)
-        closeButton.layer.shadowRadius = 4
-        closeButton.layer.shadowOpacity = 0.3
+        closeButton.layer.cornerRadius = 16
+        closeButton.layer.shadowColor = UIColor.systemBlue.cgColor
+        closeButton.layer.shadowOffset = CGSize(width: 0, height: 4)
+        closeButton.layer.shadowRadius = 8
+        closeButton.layer.shadowOpacity = 0.4
+        closeButton.layer.borderWidth = 1.5
+        closeButton.layer.borderColor = UIColor.white.withAlphaComponent(0.3).cgColor
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(closeButton)
@@ -150,19 +168,19 @@ final class SettingsViewController: UIViewController {
     
     private func createCard(title: String, content: String, backgroundColor: UIColor, borderColor: UIColor) -> UIView {
         let cardView = UIView()
-        cardView.backgroundColor = backgroundColor
-        cardView.layer.cornerRadius = 16
+        cardView.backgroundColor = backgroundColor.withAlphaComponent(0.3)
+        cardView.layer.cornerRadius = 20
         cardView.layer.borderWidth = 2
-        cardView.layer.borderColor = borderColor.cgColor
+        cardView.layer.borderColor = borderColor.withAlphaComponent(0.5).cgColor
         cardView.layer.shadowColor = UIColor.black.cgColor
-        cardView.layer.shadowOffset = CGSize(width: 0, height: 2)
-        cardView.layer.shadowRadius = 4
+        cardView.layer.shadowOffset = CGSize(width: 0, height: 4)
+        cardView.layer.shadowRadius = 12
         cardView.layer.shadowOpacity = 0.1
         cardView.translatesAutoresizingMaskIntoConstraints = false
         
         let titleLabel = UILabel()
         titleLabel.text = title
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
+        titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         titleLabel.textColor = borderColor
         titleLabel.numberOfLines = 0
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -170,21 +188,21 @@ final class SettingsViewController: UIViewController {
         
         let contentLabel = UILabel()
         contentLabel.text = content
-        contentLabel.font = UIFont.systemFont(ofSize: 15)
-        contentLabel.textColor = .label
+        contentLabel.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        contentLabel.textColor = UIColor(red: 0.2, green: 0.2, blue: 0.3, alpha: 1.0)
         contentLabel.numberOfLines = 0
         contentLabel.translatesAutoresizingMaskIntoConstraints = false
         cardView.addSubview(contentLabel)
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 16),
-            titleLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
-            titleLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16),
+            titleLabel.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 20),
+            titleLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 20),
+            titleLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -20),
             
-            contentLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
-            contentLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
-            contentLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16),
-            contentLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16)
+            contentLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
+            contentLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 20),
+            contentLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -20),
+            contentLabel.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -20)
         ])
         
         return cardView

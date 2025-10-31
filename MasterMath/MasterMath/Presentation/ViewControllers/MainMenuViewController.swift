@@ -38,21 +38,25 @@ final class MainMenuViewController: UIViewController {
     }
     
     private func configureInterface() {
+        // 清新的渐变背景：从淡蓝到淡紫
         gradientLayer.colors = [
-            UIColor.systemPurple.cgColor,
-            UIColor.systemIndigo.cgColor
+            UIColor(red: 0.95, green: 0.97, blue: 1.0, alpha: 1.0).cgColor,  // 淡蓝白
+            UIColor(red: 0.92, green: 0.94, blue: 0.98, alpha: 1.0).cgColor,  // 淡紫灰
+            UIColor(red: 0.98, green: 0.96, blue: 1.0, alpha: 1.0).cgColor   // 淡粉紫
         ]
-        gradientLayer.locations = [0.0, 1.0]
+        gradientLayer.locations = [0.0, 0.5, 1.0]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
         view.layer.insertSublayer(gradientLayer, at: 0)
         
         titleLabel.text = "Math Master"
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 48)
-        titleLabel.textColor = .white
+        titleLabel.font = UIFont.systemFont(ofSize: 52, weight: .bold)
+        titleLabel.textColor = UIColor(red: 0.2, green: 0.3, blue: 0.5, alpha: 1.0)  // 深蓝灰
         titleLabel.textAlignment = .center
-        titleLabel.layer.shadowColor = UIColor.black.cgColor
-        titleLabel.layer.shadowOffset = CGSize(width: 0, height: 4)
-        titleLabel.layer.shadowRadius = 8
-        titleLabel.layer.shadowOpacity = 0.5
+        titleLabel.layer.shadowColor = UIColor.white.cgColor
+        titleLabel.layer.shadowOffset = CGSize(width: 0, height: 2)
+        titleLabel.layer.shadowRadius = 12
+        titleLabel.layer.shadowOpacity = 0.8
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleLabel)
         
@@ -118,36 +122,53 @@ final class MainMenuViewController: UIViewController {
     
     private func configureModeButton(_ button: UIButton, title: String, color: UIColor) {
         button.setTitle(title, for: .normal)
-        button.backgroundColor = color
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 22)
+        
+        // 使用半透明背景色替代渐变，更简单且性能更好
+        button.backgroundColor = color.withAlphaComponent(0.85)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
         button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 15
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: 0, height: 4)
-        button.layer.shadowRadius = 8
-        button.layer.shadowOpacity = 0.3
+        button.layer.cornerRadius = 20
+        button.layer.shadowColor = color.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 6)
+        button.layer.shadowRadius = 12
+        button.layer.shadowOpacity = 0.4
+        
+        // 添加边框高光
+        button.layer.borderWidth = 1.5
+        button.layer.borderColor = UIColor.white.withAlphaComponent(0.3).cgColor
     }
     
     private func configureActionButton(_ button: UIButton, title: String, color: UIColor) {
         button.setTitle(title, for: .normal)
-        button.backgroundColor = color
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 12
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: 0, height: 2)
-        button.layer.shadowRadius = 4
-        button.layer.shadowOpacity = 0.3
+        
+        // 半透明背景与边框设计
+        button.backgroundColor = color.withAlphaComponent(0.15)
+        button.layer.borderWidth = 2
+        button.layer.borderColor = color.cgColor
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        button.setTitleColor(color, for: .normal)
+        button.layer.cornerRadius = 16
+        button.layer.shadowColor = color.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 4)
+        button.layer.shadowRadius = 8
+        button.layer.shadowOpacity = 0.2
     }
     
     private func animateTitleAppearance() {
-        titleLabel.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        titleLabel.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
         titleLabel.alpha = 0
         
-        UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
+        UIView.animate(withDuration: 1.0, delay: 0.1, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
             self.titleLabel.transform = .identity
             self.titleLabel.alpha = 1
         })
+        
+        // 添加微妙的呼吸动画
+        UIView.animate(withDuration: 2.0, delay: 1.0, options: [.repeat, .autoreverse, .curveEaseInOut], animations: {
+            self.titleLabel.transform = CGAffineTransform(scaleX: 1.02, y: 1.02)
+        }) { _ in
+            self.titleLabel.transform = .identity
+        }
     }
     
     private func setupReachability() {
@@ -162,12 +183,14 @@ final class MainMenuViewController: UIViewController {
     }
     
     private func animateButtonPress(_ button: UIButton) {
-        UIView.animate(withDuration: 0.1, animations: {
-            button.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+        UIView.animate(withDuration: 0.15, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.5, options: [], animations: {
+            button.transform = CGAffineTransform(scaleX: 0.92, y: 0.92)
+            button.alpha = 0.8
         }) { _ in
-            UIView.animate(withDuration: 0.1) {
+            UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, options: [], animations: {
                 button.transform = .identity
-            }
+                button.alpha = 1.0
+            })
         }
     }
     

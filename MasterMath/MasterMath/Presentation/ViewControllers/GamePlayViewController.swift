@@ -100,11 +100,16 @@ final class GamePlayViewController: UIViewController {
     private func setupInterface() {
         view.backgroundColor = UIColor.systemBackground
         
+        // 清新的渐变背景
         let gradient = CAGradientLayer()
         gradient.colors = [
-            UIColor.systemTeal.withAlphaComponent(0.3).cgColor,
-            UIColor.systemBackground.cgColor
+            UIColor(red: 0.97, green: 0.98, blue: 1.0, alpha: 1.0).cgColor,  // 淡蓝白
+            UIColor(red: 0.99, green: 0.99, blue: 1.0, alpha: 1.0).cgColor,  // 纯白
+            UIColor(red: 0.98, green: 0.97, blue: 0.99, alpha: 1.0).cgColor   // 淡粉紫
         ]
+        gradient.locations = [0.0, 0.5, 1.0]
+        gradient.startPoint = CGPoint(x: 0, y: 0)
+        gradient.endPoint = CGPoint(x: 1, y: 1)
         gradient.frame = view.bounds
         view.layer.insertSublayer(gradient, at: 0)
         gradientLayer = gradient
@@ -118,29 +123,59 @@ final class GamePlayViewController: UIViewController {
     }
     
     private func setupHeaderElements() {
+        // 关闭按钮 - 现代化的圆形设计
         closeButton.setTitle("✕", for: .normal)
-        closeButton.setTitleColor(.black, for: .normal)
-        closeButton.titleLabel?.font = UIFont.systemFont(ofSize: 28, weight: .bold)
+        closeButton.setTitleColor(UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1.0), for: .normal)
+        closeButton.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        closeButton.backgroundColor = UIColor.white.withAlphaComponent(0.9)
+        closeButton.layer.cornerRadius = 20
+        closeButton.layer.shadowColor = UIColor.black.cgColor
+        closeButton.layer.shadowOffset = CGSize(width: 0, height: 2)
+        closeButton.layer.shadowRadius = 8
+        closeButton.layer.shadowOpacity = 0.1
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(closeButton)
         
+        // 分数标签 - 卡片样式
         scoreLabel.text = "Score: 0"
-        scoreLabel.font = UIFont.boldSystemFont(ofSize: 20)
-        scoreLabel.textColor = .black
+        scoreLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        scoreLabel.textColor = UIColor(red: 0.2, green: 0.4, blue: 0.7, alpha: 1.0)
+        scoreLabel.backgroundColor = UIColor.white.withAlphaComponent(0.9)
+        scoreLabel.layer.cornerRadius = 12
+        scoreLabel.textAlignment = .center
+        scoreLabel.layer.shadowColor = UIColor.black.cgColor
+        scoreLabel.layer.shadowOffset = CGSize(width: 0, height: 2)
+        scoreLabel.layer.shadowRadius = 4
+        scoreLabel.layer.shadowOpacity = 0.1
         scoreLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scoreLabel)
         
+        // 等级标签 - 卡片样式
         levelLabel.text = "Level 1"
-        levelLabel.font = UIFont.boldSystemFont(ofSize: 20)
-        levelLabel.textColor = .black
+        levelLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        levelLabel.textColor = UIColor(red: 0.7, green: 0.3, blue: 0.5, alpha: 1.0)
+        levelLabel.backgroundColor = UIColor.white.withAlphaComponent(0.9)
+        levelLabel.layer.cornerRadius = 12
+        levelLabel.textAlignment = .center
+        levelLabel.layer.shadowColor = UIColor.black.cgColor
+        levelLabel.layer.shadowOffset = CGSize(width: 0, height: 2)
+        levelLabel.layer.shadowRadius = 4
+        levelLabel.layer.shadowOpacity = 0.1
         levelLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(levelLabel)
         
         if mode.hasTimer {
             timeLabel.text = "⏱ 0"
-            timeLabel.font = UIFont.boldSystemFont(ofSize: 20)
-            timeLabel.textColor = .systemRed
+            timeLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+            timeLabel.textColor = .white
+            timeLabel.backgroundColor = UIColor.systemRed.withAlphaComponent(0.8)
+            timeLabel.layer.cornerRadius = 12
+            timeLabel.textAlignment = .center
+            timeLabel.layer.shadowColor = UIColor.systemRed.cgColor
+            timeLabel.layer.shadowOffset = CGSize(width: 0, height: 2)
+            timeLabel.layer.shadowRadius = 4
+            timeLabel.layer.shadowOpacity = 0.3
             timeLabel.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(timeLabel)
         }
@@ -148,31 +183,54 @@ final class GamePlayViewController: UIViewController {
     
     private func setupTargetDisplay() {
         targetLabel.text = "Target: 0"
-        targetLabel.font = UIFont.boldSystemFont(ofSize: 36)
-        targetLabel.textColor = .systemIndigo
+        targetLabel.font = UIFont.systemFont(ofSize: 42, weight: .bold)
+        targetLabel.textColor = UIColor(red: 0.2, green: 0.3, blue: 0.6, alpha: 1.0)
         targetLabel.textAlignment = .center
-        targetLabel.layer.shadowColor = UIColor.black.cgColor
-        targetLabel.layer.shadowOffset = CGSize(width: 0, height: 2)
-        targetLabel.layer.shadowRadius = 4
-        targetLabel.layer.shadowOpacity = 0.2
+        targetLabel.backgroundColor = UIColor.white.withAlphaComponent(0.95)
+        targetLabel.layer.cornerRadius = 20
+        targetLabel.layer.shadowColor = UIColor(red: 0.2, green: 0.3, blue: 0.6, alpha: 1.0).cgColor
+        targetLabel.layer.shadowOffset = CGSize(width: 0, height: 4)
+        targetLabel.layer.shadowRadius = 12
+        targetLabel.layer.shadowOpacity = 0.3
+        targetLabel.layer.borderWidth = 2
+        targetLabel.layer.borderColor = UIColor(red: 0.2, green: 0.3, blue: 0.6, alpha: 0.3).cgColor
         targetLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(targetLabel)
     }
     
     private func setupContainers() {
+        // 添加容器背景和样式
+        tokensContainerView.backgroundColor = UIColor.white.withAlphaComponent(0.6)
+        tokensContainerView.layer.cornerRadius = 20
+        tokensContainerView.layer.shadowColor = UIColor.black.cgColor
+        tokensContainerView.layer.shadowOffset = CGSize(width: 0, height: 4)
+        tokensContainerView.layer.shadowRadius = 10
+        tokensContainerView.layer.shadowOpacity = 0.1
         tokensContainerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tokensContainerView)
         
+        operandsContainerView.backgroundColor = UIColor.white.withAlphaComponent(0.6)
+        operandsContainerView.layer.cornerRadius = 20
+        operandsContainerView.layer.shadowColor = UIColor.black.cgColor
+        operandsContainerView.layer.shadowOffset = CGSize(width: 0, height: 4)
+        operandsContainerView.layer.shadowRadius = 10
+        operandsContainerView.layer.shadowOpacity = 0.1
         operandsContainerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(operandsContainerView)
     }
     
     private func setupSelectionDisplay() {
         selectionLabel.text = "Select tiles and operators"
-        selectionLabel.font = UIFont.systemFont(ofSize: 18)
-        selectionLabel.textColor = .darkGray
+        selectionLabel.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+        selectionLabel.textColor = UIColor(red: 0.4, green: 0.4, blue: 0.5, alpha: 1.0)
         selectionLabel.textAlignment = .center
         selectionLabel.numberOfLines = 0
+        selectionLabel.backgroundColor = UIColor.white.withAlphaComponent(0.8)
+        selectionLabel.layer.cornerRadius = 16
+        selectionLabel.layer.shadowColor = UIColor.black.cgColor
+        selectionLabel.layer.shadowOffset = CGSize(width: 0, height: 2)
+        selectionLabel.layer.shadowRadius = 6
+        selectionLabel.layer.shadowOpacity = 0.1
         selectionLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(selectionLabel)
     }
@@ -203,14 +261,16 @@ final class GamePlayViewController: UIViewController {
     }
     
     private func styleButton(_ button: UIButton, color: UIColor) {
-        button.backgroundColor = color
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        button.backgroundColor = color.withAlphaComponent(0.9)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 12
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: 0, height: 2)
-        button.layer.shadowRadius = 4
-        button.layer.shadowOpacity = 0.2
+        button.layer.cornerRadius = 16
+        button.layer.shadowColor = color.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 4)
+        button.layer.shadowRadius = 8
+        button.layer.shadowOpacity = 0.4
+        button.layer.borderWidth = 1.5
+        button.layer.borderColor = UIColor.white.withAlphaComponent(0.3).cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -218,15 +278,24 @@ final class GamePlayViewController: UIViewController {
         var constraints: [NSLayoutConstraint] = [
             closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             closeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            closeButton.widthAnchor.constraint(equalToConstant: 40),
+            closeButton.heightAnchor.constraint(equalToConstant: 40),
             
             scoreLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             scoreLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: -60),
+            scoreLabel.widthAnchor.constraint(equalToConstant: 100),
+            scoreLabel.heightAnchor.constraint(equalToConstant: 36),
             
             levelLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             levelLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 60),
+            levelLabel.widthAnchor.constraint(equalToConstant: 100),
+            levelLabel.heightAnchor.constraint(equalToConstant: 36),
             
             targetLabel.topAnchor.constraint(equalTo: scoreLabel.bottomAnchor, constant: 20),
             targetLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            targetLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
+            targetLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
+            targetLabel.heightAnchor.constraint(equalToConstant: 70),
             
             tokensContainerView.topAnchor.constraint(equalTo: targetLabel.bottomAnchor, constant: 30),
             tokensContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
@@ -241,6 +310,7 @@ final class GamePlayViewController: UIViewController {
             selectionLabel.topAnchor.constraint(equalTo: operandsContainerView.bottomAnchor, constant: 20),
             selectionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             selectionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            selectionLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 50),
             
             buttonsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             buttonsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
@@ -251,7 +321,9 @@ final class GamePlayViewController: UIViewController {
         if mode.hasTimer {
             constraints.append(contentsOf: [
                 timeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-                timeLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+                timeLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+                timeLabel.widthAnchor.constraint(equalToConstant: 80),
+                timeLabel.heightAnchor.constraint(equalToConstant: 36)
             ])
         }
         
@@ -339,7 +411,7 @@ final class GamePlayViewController: UIViewController {
         case .success(let points):
             // 使用当前级别计算本次获得的分数（与 GameSessionManager 中的计算一致）
             let totalPoints = points * currentLevel
-            showParticleEffect()
+            showSuccessAnimation()
             showSuccessDialog(points: totalPoints)
         case .failure(let reason):
             showErrorDialog(for: reason)
@@ -594,11 +666,31 @@ final class GamePlayViewController: UIViewController {
         dialog.display(in: view)
     }
     
-    private func showParticleEffect() {
-        let effectView = ParticleEffectView(frame: view.bounds)
-        effectView.backgroundColor = .clear
-        view.addSubview(effectView)
-        effectView.showSuccessEffect()
+    private func showSuccessAnimation() {
+        // 使用脉冲动画替代粒子效果
+        let pulseView = UIView(frame: view.bounds)
+        pulseView.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.1)
+        pulseView.alpha = 0
+        view.addSubview(pulseView)
+        
+        UIView.animate(withDuration: 0.3, animations: {
+            pulseView.alpha = 1
+        }) { _ in
+            UIView.animate(withDuration: 0.5, animations: {
+                pulseView.alpha = 0
+            }) { _ in
+                pulseView.removeFromSuperview()
+            }
+        }
+        
+        // 添加缩放动画到目标标签
+        UIView.animate(withDuration: 0.2, animations: {
+            self.targetLabel.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+        }) { _ in
+            UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [], animations: {
+                self.targetLabel.transform = .identity
+            })
+        }
     }
 }
 

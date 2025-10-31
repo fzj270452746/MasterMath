@@ -22,12 +22,14 @@ final class OperatorDisplayButton: UIButton {
     }
     
     private func setupView() {
-        backgroundColor = .systemIndigo
+        backgroundColor = UIColor.systemIndigo.withAlphaComponent(0.9)
         layer.cornerRadius = 35
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOffset = CGSize(width: 0, height: 2)
-        layer.shadowRadius = 4
-        layer.shadowOpacity = 0.3
+        layer.shadowColor = UIColor.systemIndigo.cgColor
+        layer.shadowOffset = CGSize(width: 0, height: 4)
+        layer.shadowRadius = 8
+        layer.shadowOpacity = 0.4
+        layer.borderWidth = 2
+        layer.borderColor = UIColor.white.withAlphaComponent(0.3).cgColor
         
         imageView?.contentMode = .scaleAspectFit
         
@@ -37,23 +39,42 @@ final class OperatorDisplayButton: UIButton {
     func configure(with op: OperatorEntity) {
         self.operatorEntity = op
         
+        // 根据运算符设置不同的颜色
+        var buttonColor: UIColor
+        switch op {
+        case .addition:
+            buttonColor = UIColor.systemGreen
+        case .subtraction:
+            buttonColor = UIColor.systemOrange
+        case .multiplication:
+            buttonColor = UIColor.systemPurple
+        case .division:
+            buttonColor = UIColor.systemBlue
+        }
+        
+        backgroundColor = buttonColor.withAlphaComponent(0.9)
+        layer.shadowColor = buttonColor.cgColor
+        
         let imageName = op.rawValue
         if let image = UIImage(named: imageName) {
             setImage(image, for: .normal)
             imageEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         } else {
             setTitle(op.symbol, for: .normal)
-            titleLabel?.font = UIFont.boldSystemFont(ofSize: 32)
+            titleLabel?.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+            setTitleColor(.white, for: .normal)
         }
     }
     
     @objc private func buttonPressed() {
-        UIView.animate(withDuration: 0.1, animations: {
-            self.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        UIView.animate(withDuration: 0.15, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.5, options: [], animations: {
+            self.transform = CGAffineTransform(scaleX: 0.85, y: 0.85)
+            self.alpha = 0.8
         }) { _ in
-            UIView.animate(withDuration: 0.1) {
+            UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, options: [], animations: {
                 self.transform = .identity
-            }
+                self.alpha = 1.0
+            })
         }
     }
 }
