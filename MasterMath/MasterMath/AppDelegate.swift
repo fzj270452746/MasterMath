@@ -1,9 +1,3 @@
-//
-//  AppDelegate.swift
-//  MasterMath
-//
-//  Created by Hades on 10/31/25.
-//
 
 import UIKit
 
