@@ -1,7 +1,7 @@
 
 import UIKit
 import Reachability
-import Shuxyda
+
 
 class HauptViewController: UIViewController {
     
