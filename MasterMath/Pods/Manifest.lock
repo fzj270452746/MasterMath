@@ -1,30 +1,3 @@
-PODS:
-  - Adjust (5.4.1):
-    - Adjust/Adjust (= 5.4.1)
-  - Adjust/Adjust (5.4.1):
-    - AdjustSignature (= 3.47.0)
-  - AdjustSignature (3.47.0)
-  - Kingfisher (8.4.0)
-  - ReachabilitySwift (5.2.4)
-
-DEPENDENCIES:
-  - Adjust
-  - Kingfisher
-  - ReachabilitySwift
-
-SPEC REPOS:
-  trunk:
-    - Adjust
-    - AdjustSignature
-    - Kingfisher
-    - ReachabilitySwift
-
-SPEC CHECKSUMS:
-  Adjust: 1ff981e84ae1306f8cce30e0661b3997dad1b85c
-  AdjustSignature: d634fc6b66295c38807f3b4e50978c1f72355950
-  Kingfisher: b14cc47bbfa7a3c150dd12962ee9c86338545629
-  ReachabilitySwift: 32793e867593cfc1177f5d16491e3a197d2fccda
-
-PODFILE CHECKSUM: caf9406d25e4d4b8fc929a8505dd8b98b9fa9d8c
+PODFILE CHECKSUM: 12ed3aa4d40d4d3e2923aebb403c0ac22e060d76
 
 COCOAPODS: 1.16.2
